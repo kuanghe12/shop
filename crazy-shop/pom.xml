@@ -19,15 +19,15 @@
     <module>crazy-shop-util</module>
     <module>crazy-shop-model</module>
     <module>crazy-shop-dao</module>
-    <module>crazy-shop-export</module>
     <module>crazy-shop-service</module>
     <module>crazy-shop-core</module>
+   <!--  <module>crazy-shop-export</module>
     <module>crazy-shop-web</module>
     <module>crazy-shop-cache</module>
     <module>crazy-shop-mq</module>
     <module>crazy-shop-hadoop</module>
     <module>crazy-shop-hive</module>
-    <module>crazy-shop-hbase</module>
+    <module>crazy-shop-hbase</module> -->
   </modules>
   
 </project>
