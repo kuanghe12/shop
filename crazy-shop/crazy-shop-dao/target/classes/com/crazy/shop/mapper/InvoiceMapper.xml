@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kh.shop.IDao.dao.InvoiceMapper" >
+
+ <insert id="saveGoodsType" parameterType="com.kh.shop.model.Invoice" useGeneratedKeys="true" keyProperty="type_id">
+    insert into tb_goods_type (type_name, type_desc)
+    values (#{typeName,jdbcType=VARCHAR},#{typeDesc,jdbcType=VARCHAR})
+  </insert>
+  
+  
+   <select id="getGoodsType" parameterType="com.kh.shop.model.GoodsType"
+            resultType="com.kh.shop.model.GoodsType">
+        select type_id as typeId, type_name as typeName
+        FROM tb_goods_type
+        where type_status = 0
+   </select>
+
+</mapper>

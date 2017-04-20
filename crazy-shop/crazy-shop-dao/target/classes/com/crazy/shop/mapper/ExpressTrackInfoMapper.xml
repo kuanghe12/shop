@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kh.shop.IDao.dao.ExpressTrackInfoMapper" >
+
+ <insert id="saveExpressTrackInfo" parameterType="com.kh.shop.model.ExpressTrackInfo" useGeneratedKeys="true" keyProperty="infoId">
+    insert into tb_express_info (express_id, accept_station,accept_time,info_time,remark)
+    values (#{expressId,jdbcType=INTEGER},#{acceptStation,jdbcType=VARCHAR},#{acceptTime,jdbcType=VARCHAR}
+    ,#{infoTime,jdbcType=TIMESTAMP},#{remark,jdbcType=VARCHAR})
+  </insert>
+  
+    <!--根据ID删除-->
+    <delete id="deletGoodsType" parameterType="com.kh.shop.model.ExpressTrackInfo">
+        delete from tb_express_info
+        where express_id = #{expressId,jdbcType=BIGINT}
+    </delete>
+  
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kh.shop.IDao.dao.SupplierMapper" >
+
+ <insert id="saveSupplier" parameterType="com.kh.shop.model.Supplier" useGeneratedKeys="true" keyProperty="supplierId">
+    insert into tb_supplier (supplier_type, supplier_name,supplier_address,supplier_mobile,supplier_time,supplier_status)
+    values (#{supplierType,jdbcType=VARCHAR},#{supplierName,jdbcType=VARCHAR},#{supplierAddress,jdbcType=VARCHAR}
+    ,#{supplierMobile,jdbcType=VARCHAR},#{supplierTime,jdbcType=TIMESTAMP},#{supplierStatus,jdbcType=INTEGER})
+  </insert>
+  
+  
+   <select id="getSupplier" parameterType="com.kh.shop.model.Supplier" resultType="com.kh.shop.model.Supplier">
+        select supplier_id as supplierId, supplier_type as supplierType
+        ,supplier_name as supplierName,supplier_address as supplierAddress,supplier_mobile as supplierMobile,supplier_email as supplierEmail
+        ,supplier_qq as supplierQq,supplier_weixin as supplierWeixin,supplier_time as supplierTime
+        FROM tb_supplier
+        where supplier_status = 0
+        <if test="pageSize != null and limit != null">
+            limit #{pageSize, jdbcType=INTEGER}
+            offset #{limit, jdbcType=INTEGER}
+        </if>
+        <if test="pageSize == null or limit == null">
+            limit 10
+            offset 0
+        </if>
+   </select>
+   
+   <select id="getSupplierSelect" parameterType="com.kh.shop.model.Supplier" resultType="com.kh.shop.model.Supplier">
+        select supplier_id as supplierId, supplier_type as supplierType ,supplier_name as supplierName
+        FROM tb_supplier
+        where supplier_status = 0
+   </select>
+   
+   
+   <select id="getSupplierTotal" parameterType="com.kh.shop.model.Supplier" resultType="java.lang.Integer">
+		select count(1) from tb_supplier
+   </select>
+   
+   <select id="getSupplierById" parameterType="com.kh.shop.model.Supplier" resultType="com.kh.shop.model.Supplier">
+        select supplier_id as supplierId, supplier_type as supplierType
+        ,supplier_name as supplierName,supplier_address as supplierAddress,supplier_mobile as supplierMobile,supplier_email as supplierEmail
+        ,supplier_qq as supplierQq,supplier_weixin as supplierWeixin,supplier_time as supplierTime
+        FROM tb_supplier
+        where supplier_status = 0
+        and  supplier_id = #{supplierId,jdbcType=BIGINT}
+   </select>
+   
+   
+   <update id="updateSupplier" parameterType="com.kh.shop.model.Supplier">
+        update tb_supplier
+        <set >
+            <if test="supplierName != null" >
+                supplier_name = #{supplierName,jdbcType=VARCHAR},
+            </if>
+             <if test="supplierAddress != null" >
+                supplier_address = #{supplierAddress,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where supplier_id = #{supplierId,jdbcType=BIGINT}
+    </update>
+    
+    <!--供应商对账单-->
+     <select id="getSupplierBills" parameterType="com.kh.shop.model.SupplierBill" resultType="com.kh.shop.model.SupplierBill">
+      select 
+		tt.order_num as orderNum,tp.type_name as typeName,tg.good_desc as goodDesc,
+		tt.exchange_num as exchangeNum,tgi.good_price as goodPrice,tg.good_name as goodName
+		,ts.supplier_name as supplierName,tt.order_time as orderTime,tt.sku_no as skuNo
+		from tb_supplier ts
+		LEFT JOIN tb_goods tg 
+		on ts.supplier_id = tg.supplier_id
+		LEFT JOIN tb_order tt 
+		on tg.sku_no = tt.sku_no
+		LEFT JOIN (select
+		ti.info_id,ti.good_price,ti.good_id,ti.type_id
+		 from tb_goods_info ti where ti.type_id = 1 
+		ORDER BY ti.info_id desc LIMIT 1 )tgi
+		on tg.good_id = tgi.good_id
+		LEFT JOIN tb_goods_type tp
+		on tp.type_id = tg.good_type
+		where tgi.type_id = 1
+		
+		<if test="startTime != null and endTime != null" >
+              and tbo.order_time &gt;= #{startTime,jdbcType=TIMESTAMP} and  tbo.order_time &lt;= #{endTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="supplierId != null " >
+              and ts.supplier_id = #{supplierId,jdbcType=BIGINT}
+        </if>
+   </select>
+   
+    
+    
+
+</mapper>

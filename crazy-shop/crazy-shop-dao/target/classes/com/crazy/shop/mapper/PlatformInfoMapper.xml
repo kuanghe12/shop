@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kh.shop.IDao.dao.PlatformGoodsMapper" >
+
+	<select id="getPlatformGoods" parameterType="com.kh.shop.model.PlatformGoods" resultType="com.kh.shop.model.PlatformGoods">
+         select
+			tg.plat_goods_id as platGoodsId,
+			tg.sku_no as skuNo,
+			tg.good_id as goodId,
+			tp.platform_category as platformCategory,
+			tp.platform_name as platformName
+			 FROM tb_platform_goods tg
+			 LEFT JOIN tb_platform tp on tg.platform_id = tp.platform_id
+			 where tg.platform_status = 0
+        <if test="pageSize != null and limit != null">
+            limit #{pageSize, jdbcType=INTEGER}
+            offset #{limit, jdbcType=INTEGER}
+        </if>
+        <if test="pageSize == null or limit == null">
+            limit 10
+            offset 0
+        </if>
+   </select>
+   
+   <select id="getPlatformGoodsById" parameterType="com.kh.shop.model.PlatformGoods" resultType="com.kh.shop.model.PlatformGoods">
+         select
+			tg.plat_goods_id as platGoodsId
+			 FROM tb_platform_goods tg
+			 where tg.platform_status = 0
+       		and platform_id = #{platformId,jdbcType=BIGINT}
+   </select>
+   
+   
+    <select id="getPlatformTotal" parameterType="com.kh.shop.model.PlatformGoods" resultType="java.lang.Integer">
+		select count(1) from tb_platform_goods
+   </select>
+   
+    <insert id="savePlatformGoods" parameterType="com.kh.shop.model.PlatformGoods" useGeneratedKeys="true" keyProperty="platGoodsId">
+	    insert into tb_platform_goods (platform_id,good_id,platform_name,platform_category,sku_no,platform_status,platform_time,remark)
+	    values (#{platformId,jdbcType=INTEGER},#{goodId,jdbcType=INTEGER},#{platformName,jdbcType=VARCHAR},#{platformCategory,jdbcType=VARCHAR}
+	    ,#{skuNo,jdbcType=VARCHAR},#{platformStatus,jdbcType=INTEGER}
+	    ,#{platformTime,jdbcType=TIMESTAMP},#{remark,jdbcType=VARCHAR})
+  </insert>
+  
+   <!--根据ID删除-->
+    <delete id="deletPlatformGoods" parameterType="com.kh.shop.model.PlatformGoods">
+        delete from tb_platform_goods
+        where platform_id = #{platformId,jdbcType=BIGINT}
+    </delete>
+   
+</mapper>

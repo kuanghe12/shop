@@ -1,0 +1,13 @@
+com\crazy\shop\dao\GoodsMapper.class
+com\crazy\shop\dao\UserMapper.class
+com\crazy\shop\dao\PlatformGoodsMapper.class
+com\crazy\shop\dao\GoodsTypeMapper.class
+com\crazy\shop\dao\InvoiceMapper.class
+com\crazy\shop\dao\OrderMapper.class
+com\crazy\shop\dao\GoodsReceiptMapper.class
+com\crazy\shop\dao\SupplierMapper.class
+com\crazy\shop\dao\ExpressTrackInfoMapper.class
+com\crazy\shop\dao\SupplierInfoMapper.class
+com\crazy\shop\dao\ExpressTrackMapper.class
+com\crazy\shop\dao\PlatformMapper.class
+com\crazy\shop\dao\SupplierContactMapper.class

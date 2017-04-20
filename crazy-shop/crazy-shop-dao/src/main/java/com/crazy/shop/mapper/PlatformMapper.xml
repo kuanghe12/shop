@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kh.shop.IDao.dao.PlatformMapper" >
+
+	 <insert id="savePlatform" parameterType="com.kh.shop.model.Platform" useGeneratedKeys="true" keyProperty="platformId">
+	    insert into tb_platform (platform_name,platform_category,platform_contants,platform_status,platform_time)
+	    values (#{platformName,jdbcType=VARCHAR},#{platformCategory,jdbcType=VARCHAR},#{platformContants,jdbcType=INTEGER},
+	    #{platformStatus,jdbcType=INTEGER},#{platformTime,jdbcType=TIMESTAMP})
+ 	</insert>
+
+
+	 <select id="getPlatform" parameterType="com.kh.shop.model.Platform" resultType="com.kh.shop.model.Platform">
+        select platform_id as platformId, platform_name as platformName,platform_category as platformCategory,
+        platform_contants as platformContants 
+        FROM tb_platform
+        where platform_status = 0
+        <if test="pageSize != null and limit != null">
+            limit #{pageSize, jdbcType=INTEGER}
+            offset #{limit, jdbcType=INTEGER}
+        </if>
+        <if test="pageSize == null or limit == null">
+            limit 10
+            offset 0
+        </if>
+   </select>
+   
+   
+   <select id="getPlatformTotal" parameterType="com.kh.shop.model.Platform" resultType="java.lang.Integer">
+		select count(1) from tb_platform
+   </select>
+   
+   
+   <select id="getPlatformBySelect" parameterType="com.kh.shop.model.Platform" resultType="com.kh.shop.model.Platform">
+        select platform_id as platformId, platform_name as platformName,platform_category as platformCategory
+        FROM tb_platform
+        where platform_status = 0
+   </select>
+   
+   <!-- 平台对账单 -->
+   <select id="getPlatformBills" parameterType="com.kh.shop.model.PlatformBill" resultType="com.kh.shop.model.PlatformBill">
+     select tpf.platform_name as platformName,tpf.platform_category  as platformCategory,tg.good_name as goodName,tg.good_desc as goodDesc,
+		tbo.exchange_num exchangeNum,tbo.pay_amout_count payAmoutCount,
+		tbo.pay_amout payAmout,tbo.pay_score as payScore,tbo.other_pay_amount as otherPayAmount,tbo.order_time
+		from 
+		tb_platform_goods tp
+		LEFT JOIN tb_order tbo
+		on tbo.sku_no = tp.sku_no
+		LEFT JOIN tb_platform tpf
+		on tp.platform_id = tpf.platform_id
+		LEFT JOIN tb_goods tg
+		on tbo.sku_no = tg.sku_no
+		where 1=1
+		<if test="startTime != null and endTime != null" >
+              and tbo.order_time &gt;= #{startTime,jdbcType=TIMESTAMP} and  tbo.order_time &lt;= #{endTime,jdbcType=TIMESTAMP}
+        </if>
+		<if test="pageSize != null and limit != null">
+            limit #{pageSize, jdbcType=INTEGER}
+            offset #{limit, jdbcType=INTEGER}
+        </if>
+        <if test="pageSize == null or limit == null">
+            limit 10
+            offset 0
+        </if>
+   </select>
+    <select id="getPlatformBillsTotal" parameterType="com.kh.shop.model.PlatformBill" resultType="java.lang.Integer">
+		select count(1)
+		from 
+		tb_order tbo
+		LEFT JOIN tb_platform_goods tp
+		on tbo.sku_no = tp.sku_no
+		LEFT JOIN tb_platform tpf
+		on tp.platform_id = tpf.platform_id
+		LEFT JOIN tb_goods tg
+		on tbo.sku_no = tg.sku_no
+		where 1=1
+		<if test="startTime != null and endTime != null" >
+              and tbo.order_time &gt;= #{startTime,jdbcType=TIMESTAMP} and  tbo.order_time &lt;= #{endTime,jdbcType=TIMESTAMP}
+        </if>
+   </select>
+
+</mapper>

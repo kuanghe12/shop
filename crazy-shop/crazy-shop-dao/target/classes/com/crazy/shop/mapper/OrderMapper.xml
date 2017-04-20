@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kh.shop.IDao.dao.OrderMapper" >
+
+  <insert id="saveOrder" parameterType="com.kh.shop.model.Order" useGeneratedKeys="true" keyProperty="orderId">
+    insert into tb_order (sku_no, distri_num,order_num,product_num,exchange_name,exchange_num,operation_type,payment_type,pay_amout_count
+    ,pay_amout,pay_score,other_pay_amount,order_time,is_invoice)
+    values (#{skuNo,jdbcType=VARCHAR},#{distriNum,jdbcType=VARCHAR},#{orderNum,jdbcType=VARCHAR}
+    ,#{productNum,jdbcType=VARCHAR},#{exchangeName,jdbcType=VARCHAR},#{exchangeNum,jdbcType=INTEGER}
+    ,#{operationType,jdbcType=VARCHAR},#{paymentType,jdbcType=VARCHAR},#{payAmoutCount,jdbcType=DOUBLE}
+    ,#{payAmout,jdbcType=DOUBLE},#{payScore,jdbcType=INTEGER},#{otherPayAmount,jdbcType=DOUBLE}
+    ,#{orderTime,jdbcType=VARCHAR},#{isInvoice,jdbcType=VARCHAR})
+  </insert>
+   
+  
+   <select id="getOrder" parameterType="com.kh.shop.model.Order" resultType="com.kh.shop.model.OrderInfoVo">
+       select 
+		td.order_id as orderId,
+		td.exchange_name as exchangeName,td.exchange_num as exchangeNum,td.sku_no as skuNo,
+		td.order_num as orderNum,td.pay_amout as payAmout,td.pay_score as payScore,td.product_num as productNum,
+		tg.good_name as goodName,tg.good_other_name as goodOtherName,ts.supplier_name as supplierName,
+		tgr.recipients_name as recipientsName,tgr.recipients_address as recipientsAddress,
+		tgr.recipients_mobile as recipientsMobile,
+		td.logistic_code as logisticCode,
+		td.shipper_code as shipperCode,td.order_time as orderTime
+		from tb_order td
+		LEFT JOIN tb_goods tg
+		on td.sku_no = tg.sku_no
+		LEFT JOIN tb_supplier ts
+		on tg.supplier_id = ts.supplier_id
+		LEFT JOIN tb_goods_receipt tgr
+		on td.order_id = tgr.order_id
+		
+	     <if test="supplierId != null" >
+              where  ts.supplier_id = #{supplierId,jdbcType=BIGINT},
+         </if>
+		
+		 <if test="pageSize != null and limit != null">
+	          limit #{pageSize, jdbcType=INTEGER}
+	          offset #{limit, jdbcType=INTEGER}  
+	     </if>
+	     <if test="pageSize == null or limit == null">
+	          limit 10
+	          offset 0
+	     </if>
+   </select>
+   
+    <select id="getOrder2" parameterType="com.kh.shop.model.Order" resultType="com.kh.shop.model.OrderInfoVo">
+       select 
+		td.order_id as orderId, td.exchange_name as exchangeName,td.exchange_num as exchangeNum,td.sku_no as skuNo,
+		td.order_num as orderNum,td.pay_amout as payAmout,td.pay_score as payScore,td.product_num as productNum,
+		tg.good_name as goodName,tg.good_other_name as goodOtherName,ts.supplier_name as supplierName,
+		tgr.recipients_name as recipientsName,tgr.recipients_address as recipientsAddress,
+		tgr.recipients_mobile as recipientsMobile,tgi.type_id as typeId,td.logistic_code as logisticCode,
+		CASE
+			WHEN tgi.type_id = 1 THEN '采购价'
+			WHEN tgi.type_id = 2 THEN '销售价'
+			WHEN tgi.type_id = 3 THEN '活动价'
+		END as goodInfoName ,
+		td.shipper_code as shipperCode
+		from tb_order td
+		LEFT JOIN tb_goods tg
+		on td.sku_no = tg.sku_no
+		LEFT JOIN tb_supplier ts
+		on tg.supplier_id = ts.supplier_id
+		LEFT JOIN tb_goods_receipt tgr
+		on td.order_id = tgr.order_id
+		LEFT JOIN tb_goods_info tgi
+		on tgi.good_id = tg.good_id
+		GROUP BY tgi.type_id
+	 <if test="pageSize != null and limit != null">
+          limit #{pageSize, jdbcType=INTEGER}
+          offset #{limit, jdbcType=INTEGER}
+     </if>
+     <if test="pageSize == null or limit == null">
+          limit 10
+          offset 0
+     </if>
+   </select>
+   
+   
+    <update id="updateOrder" parameterType="com.kh.shop.model.Order">
+        update tb_order
+        <set >
+            <if test="logisticCode != null" >
+                logistic_code = #{logisticCode,jdbcType=VARCHAR},
+            </if>
+             <if test="shipperCode != null" >
+                shipper_code = #{shipperCode,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where order_id = #{orderId,jdbcType=BIGINT}
+    </update>
+   
+   
+   <select id="getOrderByDistriNo" parameterType="com.kh.shop.model.Order" resultType="com.kh.shop.model.OrderInfoVo">
+		select  tod.order_id as orderId, tod.shipper_code as shipperCode,tod.logistic_code as logisticCode,te.State as kuaidiStatus
+		from tb_order tod
+		LEFT JOIN tb_express te
+		on  tod.order_id = te.order_id
+		where  tod.distri_num = #{distriNum,jdbcType=VARCHAR}
+   </select>
+   
+     <select id="getOrderTotal" parameterType="com.kh.shop.model.Order" resultType="java.lang.Integer">
+		select COUNT(1) from tb_order
+   </select>
+   
+   
+
+</mapper>

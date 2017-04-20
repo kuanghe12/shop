@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kh.shop.IDao.dao.GoodsReceiptMapper" >
+
+ <insert id="saveGoodsReceipt" parameterType="com.kh.shop.model.GoodsReceipt" useGeneratedKeys="true" keyProperty="receiptId">
+    insert into tb_goods_receipt (order_id, recipients_name,recipients_address,recipients_mobile,distri_desc,
+    distri_time,supplier_msg,sign_time,distri_result,upload_status,is_client_delayed,operation_status,
+    supplier_code,standard_one,standard_two,common_carrier,expressage_num,fen_center,province,city,
+    area,address,receipt_status)
+    values (#{orderId,jdbcType=INTEGER},#{recipientsName,jdbcType=VARCHAR},#{recipientsAddress,jdbcType=VARCHAR}
+    ,#{recipientsMobile,jdbcType=VARCHAR},#{distriDesc,jdbcType=VARCHAR},#{distriTime,jdbcType=VARCHAR}
+    ,#{supplierMsg,jdbcType=VARCHAR},#{signTime,jdbcType=VARCHAR},#{distriResult,jdbcType=VARCHAR}
+    ,#{uploadStatus,jdbcType=VARCHAR},#{isClientDelayed,jdbcType=VARCHAR},#{operationStatus,jdbcType=VARCHAR}
+    ,#{supplierCode,jdbcType=VARCHAR},#{standardOne,jdbcType=VARCHAR},#{standardYTwo,jdbcType=VARCHAR}
+    ,#{commonCarrier,jdbcType=VARCHAR},#{expressageNum,jdbcType=VARCHAR},#{fenCenter,jdbcType=VARCHAR}
+    ,#{province,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{area,jdbcType=VARCHAR}
+    ,#{address,jdbcType=VARCHAR},#{receiptStatus,jdbcType=INTEGER})
+  </insert>
+  
+   <!--
+   <select id="getGoodsType" parameterType="com.shop.model.GoodsType"
+            resultType="com.shop.model.GoodsType">
+        select type_id as typeId, type_name as typeName
+        FROM tb_goods_type
+        where type_status = 0
+   </select> -->
+
+</mapper>
